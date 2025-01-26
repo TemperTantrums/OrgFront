@@ -1,0 +1,285 @@
+<div class="container-fluid mt-4">
+  <div class="row align-items-center">
+    <!-- Filter Input and Clear Button -->
+    <div class="col-md-10 col-sm-9 d-flex align-items-center">
+      <!-- Filter input field -->
+      <mat-form-field appearance="outline" class="filter-bar">
+        <mat-label>Filter</mat-label>
+        <input
+          matInput
+          #filterInput
+          (keyup)="applyFilter($event)"
+          placeholder="Search"
+        />
+      </mat-form-field>
+      <!-- Clear filter button -->
+      <button
+        mat-raised-button
+        color="primary"
+        class="btn btn-clear-filter ms-2"
+        (click)="clearFilter(filterInput)"
+        style="background-color: #0e5dd6"
+      >
+        Clear Filter
+      </button>
+    </div>
+
+    <!-- Add Button -->
+    <div class="col-md-2 col-sm-3 text-end">
+      <button
+        mat-icon-button
+        color="primary"
+        class="btn btn-primary btn-add"
+        (click)="openAddModal()"
+        aria-label="Add Entry"
+      >
+        <mat-icon class="add-icon">add</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Table Section -->
+  <div class="row">
+    <div class="col-12">
+      <div>
+        <!-- Data table -->
+        <table
+          mat-table
+          [dataSource]="dataSource"
+          matSort
+          class="mat-elevation-z1 w-100 crud-table"
+          [matSortDisabled]="dataSource.data.length === 0"
+        >
+          <!-- Column for company names -->
+          <ng-container matColumnDef="company">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Company</th>
+            <td mat-cell *matCellDef="let element">{{ element.company }}</td>
+          </ng-container>
+
+          <!-- Column for departments -->
+          <ng-container matColumnDef="department">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              Departments
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <!-- Display each department as a badge -->
+              <div class="badge-container">
+                <span
+                  class="badge"
+                  *ngFor="let dept of element.department.split(',')"
+                >
+                  {{ dept.trim() }}
+                </span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Action buttons column -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Action</th>
+            <td mat-cell *matCellDef="let element" class="action-cell">
+              <!-- Edit button -->
+              <button
+                mat-icon-button
+                (click)="openEditModal(element)"
+                matTooltip="Edit"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <!-- Delete button -->
+              <button
+                mat-icon-button
+                (click)="openDeleteModal(element)"
+                matTooltip="Delete"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <!-- Table Header and Row Definitions -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+
+      <!-- Paginator -->
+      <mat-paginator
+        [hidden]="isFilteredDataEmpty()"
+        [pageSize]="5"
+        [pageSizeOptions]="[5, 10, 15]"
+        showFirstLastButtons
+        class="mt-4"
+      ></mat-paginator>
+    </div>
+  </div>
+
+  <!-- Message displayed when the table is empty -->
+  <div
+    *ngIf="dataSource.filteredData.length === 0"
+    class="empty-table-message text-center"
+  >
+    <div *ngIf="dataSource.filter; else noData">
+      No results found for "{{ dataSource.filter }}". Please refine your search.
+    </div>
+    <ng-template #noData>
+      No data available. Click "+" to add a new entry.
+    </ng-template>
+  </div>
+
+  <!-- Modal for Adding or Editing Entries -->
+  <div
+    *ngIf="showModal"
+    class="modal fade show"
+    tabindex="-1"
+    role="dialog"
+    style="display: block"
+  >
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ isEdit ? "Edit Entry" : "Add Entry" }}</h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="closeModal()"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <!-- Form for adding or editing an entry -->
+          <form
+            (ngSubmit)="isEdit ? saveEditedEntry() : saveNewEntry()"
+            #entryForm="ngForm"
+          >
+            <div class="row g-3">
+              <!-- Input for company name -->
+              <div class="col-12">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Company</mat-label>
+                  <input
+                    matInput
+                    type="text"
+                    [(ngModel)]="formEntry.company"
+                    name="company"
+                    placeholder="e.g. Google, Microsoft, etc."
+                    required
+                    minlength="3"
+                    maxlength="50"
+                    #company="ngModel"
+                  />
+                  <mat-error *ngIf="company.errors?.['required']"
+                    >Company is required</mat-error
+                  >
+                  <mat-error *ngIf="company.errors?.['minlength']"
+                    >Minimum 3 characters required</mat-error
+                  >
+                  <mat-error *ngIf="company.errors?.['maxlength']"
+                    >Maximum 50 characters allowed</mat-error
+                  >
+                </mat-form-field>
+              </div>
+
+              <!-- Dynamic department input fields -->
+              <div
+                class="col-12"
+                *ngFor="
+                  let dept of formEntry.departments;
+                  let i = index;
+                  trackBy: trackByIndex
+                "
+              >
+                <div class="d-flex align-items-center">
+                  <!-- Department input -->
+                  <mat-form-field appearance="outline" class="flex-grow-1 me-2">
+                    <mat-label>Department {{ i + 1 }}</mat-label>
+                    <input
+                      matInput
+                      type="text"
+                      [(ngModel)]="formEntry.departments[i]"
+                      [name]="'department-' + i"
+                      placeholder="e.g. IT, HR, etc."
+                      required
+                    />
+                  </mat-form-field>
+                  <!-- Remove department button -->
+
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    (click)="removeDepartment(i)"
+                    *ngIf="formEntry.departments.length > 1"
+                    aria-label="Remove department"
+                  >
+                    <mat-icon>remove</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Modal footer buttons -->
+            <div class="d-flex justify-content-between mt-3">
+              <!-- Add department button -->
+              <button
+                mat-mini-button
+                color="primary"
+                (click)="addDepartment()"
+                type="button"
+                class="btn btn-primary btn-secondary"
+              >
+                Add Department
+              </button>
+
+              <!-- Save button -->
+              <button
+                type="submit"
+                class="btn btn-primary btn-secondary"
+                [disabled]="entryForm.invalid"
+              >
+                {{ isEdit ? "Edit" : "Add" }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for confirming entry deletion -->
+  <div
+    *ngIf="showDeleteModal"
+    class="modal fade show"
+    tabindex="-1"
+    role="dialog"
+    style="display: block"
+  >
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete Entry</h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="closeDeleteModal()"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <p>
+            Are you sure you want to delete {{ selectedEntry?.company }} -
+            {{ selectedEntry?.department }}?
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="confirmDelete()"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
