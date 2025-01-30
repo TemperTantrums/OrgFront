@@ -1,0 +1,87 @@
+<div class="container-fluid mt-4">
+  <mat-card>
+    <div class="row">
+      <div class="col-md-1"></div>
+      <div class="col-md-10">
+        <button mat-button [matMenuTriggerFor]="menu" class="btn">+</button>
+
+        <!-- Dropdown menu -->
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="openModal()">COC-2120</button>
+          <button mat-menu-item (click)="openModal()">AP-15</button>
+        </mat-menu>
+
+        <mat-card-title class="title">Biometric Upload</mat-card-title>
+        <table class="table table-bordered">
+          <thead class="thead-light">
+            <tr class="fonts">
+              <th>Employee No.</th>
+              <th>Name</th>
+              <th>Time In</th>
+              <th>Meal Out</th>
+              <th>Meal In</th>
+              <th>Time Out</th>
+              <th>Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of uploadedData">
+              <td>{{ row.employeeNo }}</td>
+              <td>{{ row.name }}</td>
+              <td>{{ row.timeIn }}</td>
+              <td>{{ row.mealOut }}</td>
+              <td>{{ row.mealIn }}</td>
+              <td>{{ row.timeOut }}</td>
+              <td>{{ row.timestamp }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-1"></div>
+    </div>
+  </mat-card>
+</div>
+
+<!-- Bootstrap Modal -->
+<div
+  class="modal fade"
+  id="uploadModal"
+  tabindex="-1"
+  aria-labelledby="uploadModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="uploadModalLabel">Upload Biometric File</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <!-- File input field -->
+        <input
+          type="file"
+          class="form-control"
+          (change)="handleFileSelection($event)"
+        />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <!-- Upload button triggers file processing -->
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="handleFileUpload()"
+        >
+          Upload
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
