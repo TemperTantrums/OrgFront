@@ -1,79 +1,204 @@
-import { Component } from '@angular/core';
-import * as XLSX from 'xlsx'; // Import XLSX for Excel/CSV parsing
+import { Component, AfterViewInit, ViewChild } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatSnackBar } from '@angular/material/snack-bar'; // ✅ Import Snackbar
 declare var bootstrap: any;
+import { BiometricService } from '../services/biometric.service';
 
 @Component({
   selector: 'app-biometric',
   templateUrl: './biometric.component.html',
   styleUrls: ['./biometric.component.css'],
 })
-export class BiometricComponent {
-  uploadedData: any[] = []; // Store extracted data
-  selectedFile: File | null = null; // Store the selected file
-  modalInstance: any; // To store modal instance for proper handling
+export class BiometricComponent implements AfterViewInit {
+  displayedColumns: string[] = ['enNo', 'DateTime'];
+  dataSource = new MatTableDataSource<any>([]);
+  selectedFile: File | null = null;
+  modalInstance: any;
+  isUploading = false;
 
-  // Open Modal Function
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
+  constructor(
+    private biometricService: BiometricService,
+    private snackBar: MatSnackBar
+  ) {} // ✅ Inject MatSnackBar
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+
   openModal() {
-    var modal = new bootstrap.Modal(document.getElementById('uploadModal'));
-    modal.show();
-    this.modalInstance.show();
+    const modalElement = document.getElementById('uploadModal');
+    if (modalElement) {
+      this.modalInstance = new bootstrap.Modal(modalElement);
+      this.modalInstance.show();
+    }
   }
 
-  closeUploadModal() {
-    var modal = new bootstrap.Modal(document.getElementById('uploadModal'));
-    modal.hide();
+  closeModal() {
+    if (this.modalInstance) {
+      this.modalInstance.hide();
+    }
   }
 
-  // Store the selected file when chosen
+  showNotification(message: string, type: 'success' | 'error' = 'success') {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      panelClass: type === 'success' ? 'snackbar-success' : 'snackbar-error',
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+    });
+  }
+
   handleFileSelection(event: any) {
     this.selectedFile = event.target.files[0];
-  }
 
-  // Handle File Upload when "Upload" is clicked
-  handleFileUpload() {
     if (!this.selectedFile) {
-      alert('Please select a file first!');
+      this.showNotification('Please select a file first!', 'error');
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: 'array' });
+    // ✅ Validate file type: Only allow .txt files
+    const fileName = this.selectedFile.name;
+    const fileExtension = fileName.split('.').pop()?.toLowerCase();
 
-      // Assuming first sheet contains the data
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
+    if (fileExtension !== 'txt') {
+      this.showNotification(
+        'Invalid file type! Please upload a .TXT file.',
+        'error'
+      );
+      this.selectedFile = null; // Reset selection
+      event.target.value = ''; // Clear file input field
+      return;
+    }
 
-      // Convert sheet to JSON
-      const extractedData: any[] = XLSX.utils.sheet_to_json(worksheet, {
-        header: 1,
-      });
-
-      // Convert to structured data (assuming fixed format)
-      this.uploadedData = extractedData.slice(1).map((row) => ({
-        employeeNo: row[0],
-        name: row[1],
-        timeIn: row[2],
-        mealOut: row[3],
-        mealIn: row[4],
-        timeOut: row[5],
-        timestamp: this.convertExcelDateToJSDate(row[6]),
-      }));
-
-      // Close the modal after uploading
-      if (this.modalInstance) {
-        this.modalInstance.hide();
-      }
-    };
-
-    reader.readAsArrayBuffer(this.selectedFile);
+    this.handleFileUpload();
   }
 
-  // Convert Excel serial date to JS Date
-  convertExcelDateToJSDate(excelDate: number): string {
-    const epoch = new Date(1900, 0, 1); // Excel's epoch starts on January 1, 1900
-    const jsDate = new Date((excelDate - 25569) * 86400 * 1000); // Convert to milliseconds
-    return jsDate.toLocaleString(); // Return formatted date string
+  handleFileUpload() {
+    if (!this.selectedFile) {
+      this.showNotification('Please select a file first!', 'error');
+      return;
+    }
+
+    this.isUploading = true;
+    const reader = new FileReader();
+    let chunkSize = 500;
+    let linesBuffer: string[] = [];
+    let lineReader = new FileReader();
+
+    reader.onload = (e: any) => {
+      const fileContent = e.target.result;
+      const lines = fileContent.split('\n');
+
+      if (lines.length < 2) {
+        this.showNotification('No valid data found in the file.', 'error');
+        this.isUploading = false;
+        return;
+      }
+
+      let headers = lines[0].trim().split(/\s+/);
+      let enNoIndex = headers.indexOf('EnNo');
+      let dateIndex = headers.indexOf('DateTime');
+
+      if (enNoIndex === -1 || dateIndex === -1) {
+        this.showNotification(
+          'Invalid file format: Missing required columns (EnNo, DateTime).',
+          'error'
+        );
+        this.isUploading = false;
+        return;
+      }
+
+      let totalChunks = Math.ceil(lines.length / chunkSize);
+      let currentChunk = 0;
+
+      const processChunk = () => {
+        if (currentChunk >= totalChunks) {
+          console.log('All chunks processed.');
+          this.isUploading = false;
+          this.closeModal();
+          return;
+        }
+
+        let chunkLines = lines.slice(
+          currentChunk * chunkSize,
+          (currentChunk + 1) * chunkSize
+        );
+        let extractedData = this.extractDataFromChunk(chunkLines);
+
+        if (extractedData.length > 0) {
+          this.uploadDataToMongoDB(extractedData, () => {
+            currentChunk++;
+            processChunk();
+          });
+        } else {
+          currentChunk++;
+          processChunk();
+        }
+      };
+
+      processChunk();
+    };
+
+    reader.readAsText(this.selectedFile);
+  }
+
+  extractDataFromChunk(chunkLines: string[]) {
+    let regex =
+      /(\d+)\s+(\d+)\s+(\d+)\s+.*\s+\d+\s+(\d{4}\/\d{2}\/\d{2}\s+\d{2}:\d{2}:\d{2})/;
+
+    return chunkLines
+      .map((line: string) => {
+        let match = line.trim().match(regex);
+        if (!match) return null;
+        return {
+          enNo: match[3],
+          DateTime: match[4],
+        };
+      })
+      .filter(Boolean);
+  }
+
+  uploadDataToMongoDB(data: any[], callback: () => void) {
+    this.biometricService.uploadBiometricData(data).subscribe({
+      next: (response) => {
+        console.log(`Uploaded ${data.length} records.`);
+        this.dataSource.data = [...this.dataSource.data, ...data];
+        this.showNotification(
+          `Uploaded ${data.length} records successfully!`,
+          'success'
+        );
+        callback();
+      },
+      error: (error) => {
+        console.error('Error uploading data:', error);
+        this.showNotification('Failed to upload data.', 'error');
+        callback();
+      },
+    });
+  }
+
+  fetchRecords() {
+    this.biometricService.getBiometricRecords().subscribe(
+      (data) => {
+        this.dataSource.data = [...data];
+        console.log('Fetched data:', this.dataSource.data);
+        this.showNotification('Records fetched successfully!', 'success');
+      },
+      (error) => {
+        console.error('Error fetching records:', error);
+        this.showNotification('Failed to fetch records.', 'error');
+      }
+    );
+  }
+
+  clearRecords() {
+    this.dataSource.data = [];
+    this.showNotification('Records cleared.', 'success');
   }
 }

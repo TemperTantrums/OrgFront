@@ -1,13 +1,173 @@
-.btn {
-  float: right;
-  font-size: x-large;
+/* General Container Styling */
+.container {
+  max-width: 900px;
+  margin: auto;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
-.title {
+
+/* Header */
+h2 {
+  font-weight: bold;
+  color: #333;
+}
+
+/* Centering and Spacing */
+.text-center {
   text-align: center;
-  font-size: x-large;
-  margin-top: 10px;
-  margin-bottom: 20px;
 }
-.fonts {
-  font-size: small;
+
+.mt-4 {
+  margin-top: 20px;
+}
+
+/* Button Styling */
+.btn,
+.mat-raised-button {
+  padding: 12px 15px;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-primary,
+.mat-primary {
+  background-color: #007bff !important;
+  color: white;
+}
+
+.btn-primary:hover,
+.mat-primary:hover {
+  background-color: #0056b3 !important;
+}
+
+.btn-success,
+.mat-success {
+  background-color: #28a745 !important;
+  color: white;
+}
+
+.btn-success:hover,
+.mat-success:hover {
+  background-color: #218838 !important;
+}
+
+.btn-info,
+.mat-info {
+  background-color: #17a2b8 !important;
+  color: white;
+}
+
+.btn-info:hover,
+.mat-info:hover {
+  background-color: #138496 !important;
+}
+
+.btn-danger,
+.mat-warn {
+  background-color: #dc3545 !important;
+  color: white;
+}
+
+.btn-danger:hover,
+.mat-warn:hover {
+  background-color: #c82333 !important;
+}
+
+/* Add spacing between action buttons */
+.action-buttons button {
+  margin: 5px;
+}
+
+/* Modal Styling */
+.modal-content {
+  border-radius: 10px;
+  padding: 20px;
+  background: #f8f9fa;
+}
+
+.modal-header {
+  border-bottom: none;
+}
+
+.modal-body {
+  padding: 15px;
+}
+
+/* File Input Styling */
+input[type="file"] {
+  border: 2px dashed #ccc;
+  padding: 15px;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+input[type="file"]:hover {
+  border-color: #007bff;
+}
+
+/* Table Styling */
+.table {
+  margin-top: 15px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table th {
+  background-color: #343a40 !important;
+  color: white !important;
+  text-align: center;
+  padding: 12px;
+}
+
+.table td {
+  text-align: center;
+  vertical-align: middle;
+  padding: 10px;
+}
+
+/* Material Table Styling */
+.mat-table {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.mat-header-row {
+  background-color: #343a40;
+  color: white;
+  font-weight: bold;
+}
+
+.mat-row {
+  transition: background 0.3s ease-in-out;
+}
+
+.mat-row:hover {
+  background: #f8f9fa;
+}
+
+/* Pagination Styling */
+.mat-paginator {
+  background-color: #f8f9fa;
+  border-top: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 0 0 10px 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+
+  .btn,
+  .mat-raised-button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
 }
