@@ -1,253 +1,268 @@
 <div class="container mt-4">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="card p-3 shadow">
-        <!-- HEADER SECTION -->
-        <div class="row align-items-center mb-3">
-          <!-- Left-Aligned CIVIL SERVICE FORM NO. 48 -->
-          <div class="col-12 text-start mb-2">
-            <p class="form-title">CIVIL SERVICE FORM NO. 48</p>
-          </div>
+  <div class="row justify-content-center">
+    <!-- DTR 1 -->
+    <div class="col-md-5 mb-4">
+      <ng-container *ngTemplateOutlet="dtrTemplate"></ng-container>
+    </div>
 
-          <!-- Logos and Centered Title -->
-          <div class="col-2 text-start">
-            <img
-              [src]="leftLogoUrl || 'assets/Mcdonalds.png'"
-              alt="Left Logo"
-              class="img-fluid clickable-logo"
-              width="80"
-              (click)="triggerLeftLogoUpload()"
-            />
-          </div>
+    <!-- Spacer between the DTRs -->
+    <div class="col-md-1"></div>
 
-          <div class="col-8 text-center">
-            <h6 class="mb-0"><strong>DAILY TIME RECORD</strong></h6>
-            <!-- Editable Company Name Input -->
-            <input
-              type="text"
-              class="form-control company-name-input"
-              placeholder="COMPANY"
-            />
-
-            <p class="mb-0">-oOo-</p>
-          </div>
-
-          <div class="col-2 text-end">
-            <img
-              [src]="rightLogoUrl || 'assets/Mcdonalds.png'"
-              alt="Right Logo"
-              class="img-fluid clickable-logo"
-              width="80"
-              (click)="triggerRightLogoUpload()"
-            />
-          </div>
-        </div>
-
-        <!-- Hidden File Inputs for Logo Upload -->
-        <input
-          type="file"
-          #leftLogoInput
-          (change)="onLeftLogoUpload($event)"
-          accept="image/*"
-          style="display: none"
-        />
-        <input
-          type="file"
-          #rightLogoInput
-          (change)="onRightLogoUpload($event)"
-          accept="image/*"
-          style="display: none"
-        />
-
-        <!-- Period Section -->
-        <div class="row mb-2">
-          <div class="col-12 d-flex align-items-center">
-            <label class="label-text me-2"
-              ><strong>For the Period of</strong></label
-            >
-            <input
-              type="text"
-              class="form-control period-input"
-              placeholder="NOVEMBER 1-15, 2024"
-            />
-          </div>
-        </div>
-
-        <!-- ARRIVAL & EMPLOYEE INFO (4-Column Grid Layout) -->
-        <div class="row mb-2">
-          <!-- Column 1: Labels for Arrival and Departure -->
-          <div class="col-3 d-flex flex-column justify-content-between">
-            <label class="label-text"
-              >Official Arrival<br />
-              of Hours</label
-            >
-            <label class="label-text mt-3">and departure</label>
-          </div>
-
-          <!-- Column 2: Input Fields for Arrival and Departure -->
-          <div class="col-3 d-flex flex-column justify-content-between">
-            <input
-              type="text"
-              class="form-control underline-input mb-2"
-              placeholder="open time"
-            />
-            <input
-              type="text"
-              class="form-control underline-input"
-              placeholder="close time"
-            />
-          </div>
-
-          <!-- Column 3: Labels for Employee No. and Department -->
-          <div class="col-3 d-flex flex-column justify-content-between">
-            <label class="label-text">Employee No.</label>
-            <label class="label-text mt-3">Department</label>
-          </div>
-
-          <!-- Column 4: Input Fields for Employee No. and Department -->
-          <div class="col-3 d-flex flex-column justify-content-between">
-            <input
-              type="text"
-              class="form-control underline-input mb-2"
-              placeholder="2026"
-            />
-            <input
-              type="text"
-              class="form-control underline-input"
-              placeholder="Jitech"
-            />
-          </div>
-        </div>
-
-        <!-- DTR TABLE -->
-        <table class="table table-bordered text-center mt-2">
-          <thead class="table-light">
-            <tr>
-              <th rowspan="2">DATE</th>
-              <th colspan="2">AM</th>
-              <th colspan="2">PM</th>
-              <th colspan="2">UNDERTIME</th>
-            </tr>
-            <tr>
-              <th>ARRIVAL</th>
-              <th>DEPARTURE</th>
-              <th>ARRIVAL</th>
-              <th>DEPARTURE</th>
-              <th>HOUR</th>
-              <th>MIN</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Dynamic Row Generation -->
-            <tr *ngFor="let record of dataSource.data">
-              <td>{{ record.date }}</td>
-              <td>
-                <input
-                  type="text"
-                  class="form-control text-center dtr-input"
-                  [(ngModel)]="record.amArrival"
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  class="form-control text-center dtr-input"
-                  [(ngModel)]="record.amDeparture"
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  class="form-control text-center dtr-input"
-                  [(ngModel)]="record.pmArrival"
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  class="form-control text-center dtr-input"
-                  [(ngModel)]="record.pmDeparture"
-                />
-              </td>
-              <td>
-                <input
-                  type="number"
-                  class="form-control text-center dtr-input"
-                  [(ngModel)]="record.undertimeHour"
-                />
-              </td>
-              <td>
-                <input
-                  type="number"
-                  class="form-control text-center dtr-input"
-                  [(ngModel)]="record.undertimeMin"
-                />
-              </td>
-            </tr>
-
-            <!-- TOTAL ROW -->
-            <tr class="total-row">
-              <td class="text-start total-title"><strong>TOTAL</strong></td>
-              <td colspan="4"></td>
-              <td>
-                <strong>{{ getTotalUndertimeHours() }} Hr(s)</strong>
-              </td>
-              <td>
-                <strong>{{ getTotalUndertimeMinutes() }} Min(s)</strong>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- CERTIFICATION SECTION -->
-        <div class="row mt-3 text-center">
-          <p class="certification-text">
-            I CERTIFY on my honor that the above is true and correct report of
-            the work performed, record of which was made at the time of arrival
-            at and from departure from office.
-          </p>
-        </div>
-
-        <!-- SIGNATURE SECTION (Centered Signature Above the Line) -->
-        <div class="row mt-4">
-          <div class="col-12 d-flex flex-column align-items-center">
-            <input
-              type="text"
-              class="form-control signature-input"
-              placeholder="Employee Signature"
-            />
-            <hr class="signature-line" />
-          </div>
-        </div>
-
-        <!-- VERIFICATION SECTION -->
-        <div class="row mt-3 text-center">
-          <p class="verification-text">
-            VERIFIED as to the prescribed office hours
-          </p>
-        </div>
-
-        <!-- FOOTER SECTION WITH INPUT FIELDS -->
-        <div class="row mt-2 text-center">
-          <div class="col-12">
-            <hr class="footer-line" />
-
-            <!-- Input for Name -->
-            <input
-              type="text"
-              class="form-control footer-name-input"
-              placeholder="Name"
-            />
-
-            <!-- Input for Title -->
-            <input
-              type="text"
-              class="form-control footer-title-input"
-              placeholder="Title"
-            />
-          </div>
-        </div>
-      </div>
+    <!-- DTR 2 -->
+    <div class="col-md-5 mb-4">
+      <ng-container *ngTemplateOutlet="dtrTemplate"></ng-container>
     </div>
   </div>
 </div>
+
+<!-- TEMPLATE FOR DTR TO AVOID REPETITION -->
+<ng-template #dtrTemplate>
+  <!-- Your entire DTR HTML goes here -->
+  <div class="card p-3 shadow">
+    <!-- HEADER SECTION -->
+    <div class="row align-items-center mb-3">
+      <div class="col-12 text-start mb-2">
+        <p class="form-title">CIVIL SERVICE FORM NO. 48</p>
+      </div>
+
+      <!-- Logos and Centered Title -->
+      <!-- Column 1: Left Logo -->
+      <div class="col-3 text-start">
+        <img
+          [src]="leftLogoUrl || 'assets/Mcdonalds.png'"
+          alt="Left Logo"
+          class="img-fluid clickable-logo"
+          width="80"
+          (click)="triggerLeftLogoUpload()"
+        />
+      </div>
+
+      <!-- Column 2: Company Name Input -->
+      <div class="col-6 text-center">
+        <h6 class="mb-0"><strong>DAILY TIME RECORD</strong></h6>
+        <input
+          type="text"
+          class="form-control company-name-input"
+          placeholder="COMPANY"
+        />
+        <p class="mb-0">-oOo-</p>
+      </div>
+
+      <!-- Column 3: Right Logo -->
+      <div class="col-3 text-end">
+        <img
+          [src]="rightLogoUrl || 'assets/Mcdonalds.png'"
+          alt="Right Logo"
+          class="img-fluid clickable-logo"
+          width="80"
+          (click)="triggerRightLogoUpload()"
+        />
+      </div>
+    </div>
+
+    <!-- Hidden File Inputs for Logo Upload -->
+    <input
+      type="file"
+      #leftLogoInput
+      (change)="onLeftLogoUpload($event)"
+      accept="image/*"
+      style="display: none"
+    />
+    <input
+      type="file"
+      #rightLogoInput
+      (change)="onRightLogoUpload($event)"
+      accept="image/*"
+      style="display: none"
+    />
+
+    <!-- Period Section -->
+    <div class="row mb-2">
+      <div class="col-12 d-flex align-items-center">
+        <label class="label-text me-2"
+          ><strong>For the Period of</strong></label
+        >
+        <input
+          type="text"
+          class="form-control period-input"
+          placeholder="NOVEMBER 1-15, 2024"
+        />
+      </div>
+    </div>
+
+    <!-- ARRIVAL & EMPLOYEE INFO (4-Column Grid Layout) -->
+    <div class="row mb-2">
+      <!-- Column 1: Labels for Arrival and Departure -->
+      <div class="col-3 d-flex flex-column justify-content-between">
+        <label class="label-text"
+          >Official Arrival<br />
+          of Hours</label
+        >
+        <label class="label-text mt-3">and departure</label>
+      </div>
+
+      <!-- Column 2: Input Fields for Arrival and Departure -->
+      <div class="col-3 d-flex flex-column justify-content-between">
+        <input
+          type="text"
+          class="form-control underline-input mb-2"
+          placeholder="open time"
+        />
+        <input
+          type="text"
+          class="form-control underline-input"
+          placeholder="close time"
+        />
+      </div>
+
+      <!-- Column 3: Labels for Employee No. and Department -->
+      <div class="col-3 d-flex flex-column justify-content-between">
+        <label class="label-text">Employee No.</label>
+        <label class="label-text mt-3">Department</label>
+      </div>
+
+      <!-- Column 4: Input Fields for Employee No. and Department -->
+      <div class="col-3 d-flex flex-column justify-content-between">
+        <input
+          type="text"
+          class="form-control underline-input mb-2"
+          placeholder="2026"
+        />
+        <input
+          type="text"
+          class="form-control underline-input"
+          placeholder="Jitech"
+        />
+      </div>
+    </div>
+
+    <!-- DTR TABLE -->
+    <table class="table table-bordered text-center mt-2">
+      <thead class="table-light">
+        <tr>
+          <th rowspan="2">DATE</th>
+          <th colspan="2">AM</th>
+          <th colspan="2">PM</th>
+          <th colspan="2">UNDERTIME</th>
+        </tr>
+        <tr>
+          <th>ARRIVAL</th>
+          <th>DEPARTURE</th>
+          <th>ARRIVAL</th>
+          <th>DEPARTURE</th>
+          <th>HOUR</th>
+          <th>MIN</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dynamic Row Generation -->
+        <tr *ngFor="let record of dataSource.data">
+          <td>{{ record.date }}</td>
+          <td>
+            <input
+              type="text"
+              class="form-control text-center dtr-input"
+              [(ngModel)]="record.amArrival"
+            />
+          </td>
+          <td>
+            <input
+              type="text"
+              class="form-control text-center dtr-input"
+              [(ngModel)]="record.amDeparture"
+            />
+          </td>
+          <td>
+            <input
+              type="text"
+              class="form-control text-center dtr-input"
+              [(ngModel)]="record.pmArrival"
+            />
+          </td>
+          <td>
+            <input
+              type="text"
+              class="form-control text-center dtr-input"
+              [(ngModel)]="record.pmDeparture"
+            />
+          </td>
+          <td>
+            <input
+              type="number"
+              class="form-control text-center dtr-input"
+              [(ngModel)]="record.undertimeHour"
+            />
+          </td>
+          <td>
+            <input
+              type="number"
+              class="form-control text-center dtr-input"
+              [(ngModel)]="record.undertimeMin"
+            />
+          </td>
+        </tr>
+
+        <!-- TOTAL ROW -->
+        <tr class="total-row">
+          <td class="text-start total-title"><strong>TOTAL</strong></td>
+          <td colspan="4"></td>
+          <td>
+            <strong>{{ getTotalUndertimeHours() }} Hr(s)</strong>
+          </td>
+          <td>
+            <strong>{{ getTotalUndertimeMinutes() }} Min(s)</strong>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- CERTIFICATION SECTION -->
+    <div class="row mt-3 text-center">
+      <p class="certification-text">
+        I CERTIFY on my honor that the above is true and correct report of the
+        work performed, record of which was made at the time of arrival at and
+        from departure from office.
+      </p>
+    </div>
+
+    <!-- SIGNATURE SECTION (Centered Signature Above the Line) -->
+    <div class="row mt-4">
+      <div class="col-12 d-flex flex-column align-items-center">
+        <input
+          type="text"
+          class="form-control signature-input"
+          placeholder="Employee Signature"
+        />
+        <hr class="signature-line" />
+      </div>
+    </div>
+
+    <!-- VERIFICATION SECTION -->
+    <div class="row mt-3 text-center">
+      <p class="verification-text">
+        VERIFIED as to the prescribed office hours
+      </p>
+    </div>
+
+    <!-- FOOTER SECTION WITH INPUT FIELDS -->
+    <div class="row mt-2 text-center">
+      <div class="col-12">
+        <hr class="footer-line" />
+
+        <!-- Input for Name -->
+        <input
+          type="text"
+          class="form-control footer-name-input"
+          placeholder="Name"
+        />
+
+        <!-- Input for Title -->
+        <input
+          type="text"
+          class="form-control footer-title-input"
+          placeholder="Title"
+        />
+      </div>
+    </div>
+  </div>
+</ng-template>
