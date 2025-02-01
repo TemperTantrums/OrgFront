@@ -31,9 +31,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OrganizationComponent } from './organization/organization.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BiometricComponent } from './biometric/biometric.component';
+import { DtrComponent } from './dtr/dtr.component';
 
 @NgModule({
-  declarations: [AppComponent, OrganizationComponent, BiometricComponent],
+  declarations: [AppComponent, OrganizationComponent, BiometricComponent, DtrComponent],
   imports: [
     BrowserModule,
     MatProgressSpinnerModule,
