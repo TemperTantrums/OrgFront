@@ -75,7 +75,7 @@ export class DtrComponent {
     const records: DTRRecord[] = [];
     const days = ['Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu'];
     for (let i = 1; i <= 15; i++) {
-      const day = days[(i + 4) % 7]; // Adjusted to start from Friday
+      const day = days[(i + 3) % 7]; // Adjusted to start from Friday
       records.push({
         date: `${i < 10 ? '0' + i : i} ${day}`,
         amArrival: '',

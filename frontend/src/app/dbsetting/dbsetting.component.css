@@ -1,0 +1,74 @@
+/* Center the modal on the screen */
+.modal-dialog {
+  margin-top: 15vh;
+  border-radius: 12px;
+}
+
+/* Enhance the modal header for a sleek look */
+.modal-header {
+  background-color: #0d6efd;
+  color: white;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+/* Improve the look of the textarea */
+textarea#dbConnectionString {
+  border: 2px solid #ced4da;
+  border-radius: 8px;
+  transition: border-color 0.3s ease-in-out;
+}
+
+/* Highlight the textarea on focus */
+textarea#dbConnectionString:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 8px rgba(13, 110, 253, 0.5);
+  outline: none;
+}
+
+/* Style the primary button */
+.btn-primary {
+  background-color: #0d6efd;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  transition: background-color 0.3s ease-in-out;
+}
+
+/* Add hover effect to the primary button */
+.btn-primary:hover {
+  background-color: #0b5ed7;
+}
+
+/* Style the secondary button */
+.btn-secondary {
+  border-radius: 6px;
+  padding: 10px 20px;
+}
+
+/* Add subtle shadow to the modal */
+.modal-content {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Center the button in the middle of the screen */
+.center-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Ensure the button has nice padding and rounded corners */
+button.btn-primary[data-bs-toggle="modal"] {
+  font-size: 1.2rem;
+  padding: 15px 30px;
+  border-radius: 6px;
+  background-color: #198754;
+  border: none;
+  transition: background-color 0.3s ease-in-out;
+}
+
+button.btn-primary[data-bs-toggle="modal"]:hover {
+  background-color: #157347;
+}

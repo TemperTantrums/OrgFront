@@ -1,3 +1,4 @@
+import { DbSettingComponent } from './dbsetting/dbsetting.component';
 import { OrganizationComponent } from './organization/organization.component';
 import { Component, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -8,6 +9,7 @@ const routes: Routes = [
   { path: '', component: OrganizationComponent, pathMatch: 'full' },
   { path: 'biometric', component: BiometricComponent, pathMatch: 'full' },
   { path: 'dtr', component: DtrComponent, pathMatch: 'full' },
+  { path: 'setting', component: DbSettingComponent, pathMatch: 'full' },
 ];
 
 @NgModule({

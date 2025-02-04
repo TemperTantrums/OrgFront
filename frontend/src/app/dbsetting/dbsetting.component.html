@@ -1,0 +1,66 @@
+<!-- Trigger Button -->
+<div class="center-button-container">
+  <button
+    type="button"
+    class="btn btn-primary"
+    data-bs-toggle="modal"
+    data-bs-target="#dbSettingsModal"
+  >
+    Edit Database Connection String
+  </button>
+</div>
+
+<!-- Modal Structure -->
+<div
+  class="modal fade"
+  id="dbSettingsModal"
+  tabindex="-1"
+  aria-labelledby="dbSettingsModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dbSettingsModalLabel">
+          Database Connection String
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="dbConnectionString" class="form-label"
+              >Connection String</label
+            >
+            <textarea
+              class="form-control"
+              id="dbConnectionString"
+              [(ngModel)]="dbConnectionString"
+              name="dbConnectionString"
+              rows="4"
+              placeholder="Enter your database connection string here..."
+            ></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="saveConnectionString()"
+          data-bs-dismiss="modal"
+        >
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
