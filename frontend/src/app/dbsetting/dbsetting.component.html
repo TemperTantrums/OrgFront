@@ -65,6 +65,17 @@
           >
             Connection string is required!
           </div>
+
+          <div
+            *ngIf="
+              dbForm.submitted &&
+              dbConnectionString &&
+              !isValidConnectionString()
+            "
+            class="text-danger"
+          >
+            Invalid MongoDB connection string format!
+          </div>
         </form>
       </div>
       <div class="modal-footer">
@@ -74,7 +85,7 @@
         <button
           type="submit"
           class="btn btn-primary"
-          [disabled]="!dbConnectionString"
+          [disabled]="!dbConnectionString || !isValidConnectionString()"
           (click)="dbForm.onSubmit($event)"
         >
           Save Changes

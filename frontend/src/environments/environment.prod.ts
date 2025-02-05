@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://orgback.onrender.com', // Replace with your actual Render backend URL
+  defaultMongoUri:
+    'mongodb+srv://<username>:<password>@cluster0.mongodb.net/JitechDB?retryWrites=true&w=majority',
 };

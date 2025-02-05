@@ -1,5 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { DbsettingService } from '../services/dbsetting.service';
+import { environment } from '../../environments/environment.prod';
 declare var bootstrap: any;
 
 @Component({
@@ -8,7 +9,8 @@ declare var bootstrap: any;
   styleUrls: ['./dbsetting.component.css'],
 })
 export class DbSettingComponent {
-  dbConnectionString: string = '';
+  // Pre-fill with the default connection string from environment
+  dbConnectionString: string = environment.defaultMongoUri;
 
   // ViewChild to reference the modal DOM element
   @ViewChild('dbSettingsModal') dbSettingsModal!: ElementRef;
@@ -18,6 +20,13 @@ export class DbSettingComponent {
   saveConnectionString() {
     if (!this.dbConnectionString.trim()) {
       alert('Connection string cannot be empty!');
+      return;
+    }
+
+    // Validate MongoDB connection string format
+    const mongoUriPattern = /^mongodb(\+srv)?:\/\/.+/;
+    if (!mongoUriPattern.test(this.dbConnectionString)) {
+      alert('Invalid MongoDB connection string format.');
       return;
     }
 
@@ -53,5 +62,10 @@ export class DbSettingComponent {
     this.dbSettingService.getConnectionStatus().subscribe((response) => {
       console.log('Database Status:', response.status);
     });
+  }
+
+  isValidConnectionString(): boolean {
+    const mongoUriPattern = /^mongodb(\+srv)?:\/\/.+/;
+    return mongoUriPattern.test(this.dbConnectionString);
   }
 }
