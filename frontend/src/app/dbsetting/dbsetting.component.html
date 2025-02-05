@@ -1,13 +1,22 @@
-<!-- Trigger Button -->
-<div class="center-button-container">
-  <button
-    type="button"
-    class="btn btn-primary"
-    data-bs-toggle="modal"
-    data-bs-target="#dbSettingsModal"
-  >
-    Edit Database Connection String
-  </button>
+<!-- Card Container for Button -->
+<div class="container mt-5">
+  <div class="card shadow-sm mx-auto" style="max-width: 400px">
+    <div class="card-body text-center">
+      <h5 class="card-title mb-3">Database Settings</h5>
+      <p class="card-text text-muted">
+        Manage your database connection settings below.
+      </p>
+      <!-- Trigger Button -->
+      <button
+        type="button"
+        class="btn btn-primary btn-lg d-flex align-items-center gap-2 mx-auto"
+        data-bs-toggle="modal"
+        data-bs-target="#dbSettingsModal"
+      >
+        <i class="bi bi-database-fill-gear"></i> Edit Connection
+      </button>
+    </div>
+  </div>
 </div>
 
 <!-- Modal Structure -->
@@ -17,6 +26,7 @@
   tabindex="-1"
   aria-labelledby="dbSettingsModalLabel"
   aria-hidden="true"
+  #dbSettingsModal
 >
   <div class="modal-dialog">
     <div class="modal-content">
@@ -32,11 +42,11 @@
         ></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form (ngSubmit)="saveConnectionString()" #dbForm="ngForm">
           <div class="mb-3">
-            <label for="dbConnectionString" class="form-label"
-              >Connection String</label
-            >
+            <label for="dbConnectionString" class="form-label">
+              Connection String
+            </label>
             <textarea
               class="form-control"
               id="dbConnectionString"
@@ -44,7 +54,16 @@
               name="dbConnectionString"
               rows="4"
               placeholder="Enter your database connection string here..."
+              required
             ></textarea>
+          </div>
+
+          <!-- Validation Feedback -->
+          <div
+            *ngIf="dbForm.submitted && !dbConnectionString"
+            class="text-danger"
+          >
+            Connection string is required!
           </div>
         </form>
       </div>
@@ -53,10 +72,10 @@
           Close
         </button>
         <button
-          type="button"
+          type="submit"
           class="btn btn-primary"
-          (click)="saveConnectionString()"
-          data-bs-dismiss="modal"
+          [disabled]="!dbConnectionString"
+          (click)="dbForm.onSubmit($event)"
         >
           Save Changes
         </button>

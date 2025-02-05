@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
+import { DbsettingService } from '../services/dbsetting.service';
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-dbsetting',
@@ -8,7 +10,10 @@ import { Component } from '@angular/core';
 export class DbSettingComponent {
   dbConnectionString: string = '';
 
-  constructor() {}
+  // ViewChild to reference the modal DOM element
+  @ViewChild('dbSettingsModal') dbSettingsModal!: ElementRef;
+
+  constructor(private dbSettingService: DbsettingService) {}
 
   saveConnectionString() {
     if (!this.dbConnectionString.trim()) {
@@ -16,8 +21,37 @@ export class DbSettingComponent {
       return;
     }
 
-    console.log('Database Connection String:', this.dbConnectionString);
+    // Send the connection string to the backend
+    this.dbSettingService
+      .sendConnectionString(this.dbConnectionString)
+      .subscribe(
+        (response) => {
+          console.log('Database connection successful:', response);
+          alert('Connected to database successfully!');
 
-    // Proceed to send it to the backend or process further
+          // Close the modal after success
+          this.closeModal();
+        },
+        (error) => {
+          console.error('Error connecting to database:', error);
+          alert('Failed to connect to the database.');
+        }
+      );
+  }
+
+  // Method to close the modal using Bootstrap's JavaScript API
+  closeModal() {
+    const modalElement = this.dbSettingsModal.nativeElement;
+    const modalInstance = bootstrap.Modal.getInstance(modalElement); // Get the modal instance
+
+    if (modalInstance) {
+      modalInstance.hide(); // Close the modal
+    }
+  }
+
+  checkStatus() {
+    this.dbSettingService.getConnectionStatus().subscribe((response) => {
+      console.log('Database Status:', response.status);
+    });
   }
 }

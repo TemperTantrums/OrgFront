@@ -6,10 +6,10 @@ import { BiometricComponent } from './biometric/biometric.component';
 import { DtrComponent } from './dtr/dtr.component';
 
 const routes: Routes = [
-  { path: '', component: OrganizationComponent, pathMatch: 'full' },
+  { path: '', component: DbSettingComponent, pathMatch: 'full' },
+  { path: 'org', component: OrganizationComponent, pathMatch: 'full' },
   { path: 'biometric', component: BiometricComponent, pathMatch: 'full' },
   { path: 'dtr', component: DtrComponent, pathMatch: 'full' },
-  { path: 'setting', component: DbSettingComponent, pathMatch: 'full' },
 ];
 
 @NgModule({

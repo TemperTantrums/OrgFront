@@ -2,9 +2,9 @@ import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatSnackBar } from '@angular/material/snack-bar'; // ✅ Import Snackbar
-declare var bootstrap: any;
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { BiometricService } from '../services/biometric.service';
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-biometric',
@@ -24,7 +24,7 @@ export class BiometricComponent implements AfterViewInit {
   constructor(
     private biometricService: BiometricService,
     private snackBar: MatSnackBar
-  ) {} // ✅ Inject MatSnackBar
+  ) {}
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;

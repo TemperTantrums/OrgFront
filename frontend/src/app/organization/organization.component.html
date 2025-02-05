@@ -27,13 +27,14 @@
     <!-- Add Button -->
     <div class="col-md-2 col-sm-3 text-end">
       <button
-        mat-icon-button
+        mat-raised-button
         color="primary"
-        class="btn btn-primary btn-add"
+        class="btn btn-clear-filter ms-2"
         (click)="openAddModal()"
         aria-label="Add Entry"
+        style="background-color: #0e5dd6"
       >
-        <mat-icon class="add-icon">add</mat-icon>
+        Add Entry
       </button>
     </div>
   </div>
@@ -109,7 +110,7 @@
         [pageSize]="5"
         [pageSizeOptions]="[5, 10, 15]"
         showFirstLastButtons
-        class="mt-4"
+        class="pagination mt-4"
       ></mat-paginator>
     </div>
   </div>
