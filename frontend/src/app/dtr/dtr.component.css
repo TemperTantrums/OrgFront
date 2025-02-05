@@ -24,18 +24,12 @@
   margin-left: 10px;
 }
 
-.signature-input:focus {
-  outline: none;
-  box-shadow: none;
-  border: none;
-}
-
 /* Logo Styling */
 .clickable-logo {
   cursor: pointer;
   border-radius: 8px;
   border: none;
-  background-color: none;
+  background-color: transparent;
 }
 
 /* Editable Hospital Name Input Styling */
@@ -47,12 +41,6 @@
   border: none;
   width: 100%;
   margin: 5px auto;
-}
-
-.company-name-input:focus {
-  outline: none;
-  box-shadow: none;
-  border: none;
 }
 
 /* Responsive adjustments for smaller screens */
@@ -124,12 +112,8 @@ h6 {
   width: 60px;
   padding: 3px;
   text-align: center;
-}
-
-.dtr-input:focus {
-  outline: none;
-  box-shadow: none;
   border: none;
+  background-color: none;
 }
 
 .total-row td {
@@ -152,12 +136,6 @@ h6 {
   font-weight: bold;
   margin-bottom: 0;
   padding: 0;
-}
-
-.signature-input:focus {
-  outline: none;
-  box-shadow: none;
-  border: none;
 }
 
 /* Signature Line (Centered) */
@@ -191,18 +169,6 @@ h6 {
   font-size: 1rem;
 }
 
-.footer-name-input:focus,
-.footer-title-input:focus {
-  outline: none;
-  box-shadow: none;
-  border: none;
-}
-
-.dtr-input {
-  border: none;
-  background-color: none;
-}
-
 /* Label Styling */
 .label-text {
   font-size: 0.9rem;
@@ -220,13 +186,18 @@ h6 {
   width: 100%;
 }
 
+/* Adjusting Spacing Between Labels */
+.mt-3 {
+  margin-top: 1rem;
+}
+
+.signature-input:focus,
+.company-name-input:focus,
+.footer-name-input:focus,
+.footer-title-input:focus,
+.dtr-input:focus,
 .underline-input:focus {
   outline: none;
   box-shadow: none;
   border: none;
-}
-
-/* Adjusting Spacing Between Labels */
-.mt-3 {
-  margin-top: 1rem;
 }

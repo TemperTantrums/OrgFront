@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment'; // Import environment config
 
 // Company interface
 export interface Company {
@@ -18,7 +19,7 @@ export interface Company {
 
 // Component class
 export class ApiService {
-  private apiUrl = 'http://localhost:3000/api/companies';
+  private apiUrl = `${environment.apiUrl}/api/companies`; // Use environment variable for API URL
 
   // Dependency injection
   constructor(private http: HttpClient) {}
