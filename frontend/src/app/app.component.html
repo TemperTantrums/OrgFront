@@ -1,11 +1,28 @@
-<nav>
-  <ul>
-    <li><a routerLink="/">Database Settings</a></li>
-    <li><a routerLink="/org">Organization</a></li>
-    <li><a routerLink="/biometric">Biometric</a></li>
-    <li><a routerLink="/dtr">DTR</a></li>
-  </ul>
-</nav>
+<div class="app-container">
+  <!-- Sidebar and Content Wrapper -->
+  <div class="app-body">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+      <ul>
+        <li>
+          <a
+            routerLink="/"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            >Database Settings</a
+          >
+        </li>
+        <li><a routerLink="/org" routerLinkActive="active">Organization</a></li>
+        <li>
+          <a routerLink="/biometric" routerLinkActive="active">Biometric</a>
+        </li>
+        <li><a routerLink="/dtr" routerLinkActive="active">DTR</a></li>
+      </ul>
+    </nav>
 
-<!-- Display the routed component here -->
-<router-outlet></router-outlet>
+    <!-- Main Content Area -->
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
